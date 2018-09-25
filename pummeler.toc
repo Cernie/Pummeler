@@ -1,0 +1,8 @@
+## Author: Cernie
+## Interface: 11200
+## Title: Pummeler
+## Notes: Script function for smart Manual Crowd Pummeler usage
+## Dependencies: SuperMacro
+## Version: 1.0
+pummeler.xml
+pummeler.lua
