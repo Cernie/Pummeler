@@ -16,7 +16,7 @@ end;
 Pummeler_Start_HasteBuff_Time = 0;
 function Pummeler_main()
 	createPummelerFrame();
-	local haste, hasteIndex = isBuffNameActive("Haste");
+	local haste, hasteIndex = Pummeler_isBuffNameActive("Haste");
 	local slotId = GetInventorySlotInfo("MAINHANDSLOT");
 	local itemLink = GetInventoryItemLink("player", slotId);
 	local pummelerWeapon = GetItemInfo(9449);
@@ -44,7 +44,7 @@ function Pummeler_main()
 			Pummeler_Start_HasteBuff_Time = gameTime;
 			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
 		else
-			bagPummeler, slotPummeler = isPummelerInBag("Manual Crowd Pummeler");
+			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler");
 			if(bagPummeler ~= nil and slotPummeler ~= nil) then
 				UseContainerItem(bagPummeler, slotPummeler, 1);
 				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
