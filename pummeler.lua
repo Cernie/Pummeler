@@ -19,7 +19,7 @@ function Pummeler_main()
 	local haste, hasteIndex = Pummeler_isBuffNameActive("Haste");
 	local slotId = GetInventorySlotInfo("MAINHANDSLOT");
 	local itemLink = GetInventoryItemLink("player", slotId);
-	local pummelerWeapon = GetItemInfo(9449);
+	local pummelerWeapon = "Manual Crowd Pummeler";
 	local weaponTimer, weaponCd = GetInventoryItemCooldown("player", 16);
 	local gameTime = GetTime();
 	local timeLeft = 0;
