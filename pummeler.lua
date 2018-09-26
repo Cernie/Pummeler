@@ -27,14 +27,15 @@ function Pummeler_main()
 	local charge = 0;
 	local buffTimeLeft = nil;
 	local bagPummeler, slotPummeler = nil;
+	local numBuffs = Pummeler_getNumberOfBuffTextures();
 	
 	chargesText = Pummeler_getChargesText{};
 	charge = Pummeler_getChargeNumber(chargesText);
-	
+
 	if(haste == true) then
 		buffTimeLeft = 30 - math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
 		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." Is active for "..buffTimeLeft.." more seconds!");
-	elseif(haste == false) then 
+	elseif(haste == false and numBuffs < 32) then 
 		if(weaponCd ~= 0) then
 			timeLeft = weaponCd - math.floor(gameTime - weaponTimer);
 			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." On cooldown, "..timeLeft.." seconds left!");
@@ -49,9 +50,11 @@ function Pummeler_main()
 				UseContainerItem(bagPummeler, slotPummeler, 1);
 				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
 			end;
+		end;	
+	elseif(haste == false and numBuffs >= 32) then
+		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Cannot use "..itemLink.. " due to buff limit!");
 		end;
 	end;
-end;
 
 function Pummeler_getChargesText(options)
 	pummelerTooltip:SetOwner( WorldFrame, "ANCHOR_NONE" );
@@ -152,4 +155,16 @@ function Pummeler_isPummelerInBag(itemName)
             end;
         end;
     return itemBag, itemSlot;   
+end;
+
+function Pummeler_getNumberOfBuffTextures()
+	local i = 0; 
+	local g = GetPlayerBuff;
+	local maxIndex = 0;
+	while not(g(i) == -1)
+		do
+			maxIndex = maxIndex + 1;
+		i=i+1 
+	end;
+	return maxIndex;
 end;
