@@ -16,7 +16,7 @@ end;
 Pummeler_Start_HasteBuff_Time = 0;
 function Pummeler_main()
 	createPummelerFrame();
-	local haste, hasteIndex = Pummeler_isBuffNameActive("Haste");
+	local haste, hasteIndex, numBuffs = Pummeler_isBuffNameActive("Haste");
 	local slotId = GetInventorySlotInfo("MAINHANDSLOT");
 	local itemLink = GetInventoryItemLink("player", slotId);
 	local pummelerWeapon = "Manual Crowd Pummeler";
@@ -27,7 +27,7 @@ function Pummeler_main()
 	local charge = 0;
 	local buffTimeLeft = nil;
 	local bagPummeler, slotPummeler = nil;
-	local numBuffs = Pummeler_getNumberOfBuffTextures();
+	numBuffs = numBuffs - 1;
 	
 	chargesText = Pummeler_getChargesText{};
 	charge = Pummeler_getChargeNumber(chargesText);
@@ -133,7 +133,7 @@ function Pummeler_isBuffNameActive(buff)
 		pummelerTooltip:Hide();
 		i=i+1;
 	end;
-	return isActive, index;
+	return isActive, index, i;
 end;
 
 function Pummeler_isPummelerInBag(itemName)
@@ -155,16 +155,4 @@ function Pummeler_isPummelerInBag(itemName)
             end;
         end;
     return itemBag, itemSlot;   
-end;
-
-function Pummeler_getNumberOfBuffTextures()
-	local i = 0; 
-	local g = GetPlayerBuff;
-	local maxIndex = 0;
-	while not(g(i) == -1)
-		do
-			maxIndex = maxIndex + 1;
-		i=i+1 
-	end;
-	return maxIndex;
 end;
