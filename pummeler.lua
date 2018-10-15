@@ -4,8 +4,10 @@ function Pummeler_OnLoad()
 	this:RegisterEvent("ADDON_LOADED");
 	DEFAULT_CHAT_FRAME:AddMessage("Pummeler addon loaded. Type /pummeler for usage.");
 	SlashCmdList["PUMMELER"] = function()
-		local msg = "To use Pummeler addon, create a macro and type /script Pummeler_main();"
+		local msg = "To use Pummeler addon, create a macro and type /script Pummeler_main();";
+		local msg2 = "To equip a fully charged Manual Crowd Pummeler, create a separate macro and type /script Pummeler_equipFullyCharged();";
 		DEFAULT_CHAT_FRAME:AddMessage(msg);
+		DEFAULT_CHAT_FRAME:AddMessage(msg2);
 	end;
 	SLASH_PUMMELER1 = "/pummeler";
 end;
@@ -45,7 +47,7 @@ function Pummeler_main()
 			Pummeler_Start_HasteBuff_Time = gameTime;
 			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
 		else
-			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler");
+			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler", false);
 			if(bagPummeler ~= nil and slotPummeler ~= nil) then
 				UseContainerItem(bagPummeler, slotPummeler, 1);
 				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
@@ -136,7 +138,7 @@ function Pummeler_isBuffNameActive(buff)
 	return isActive, index, i;
 end;
 
-function Pummeler_isPummelerInBag(itemName)
+function Pummeler_isPummelerInBag(itemName, threeChargesFlag)
     local itemBag, itemSlot = nil;
 	local charges = nil;
     for bag = 0, 4, 1
@@ -146,7 +148,12 @@ function Pummeler_isPummelerInBag(itemName)
                 if name and string.find(name, itemName) then
                     if string.find(name, itemName) then 
 						charges = Pummeler_getChargeNumber(Pummeler_getChargesText{bag = bag, slot = slot});
-						if(charges > 0) then
+						if(threeChargesFlag == true) then
+							if(charges == 3) then
+								itemBag = bag; itemSlot = slot; 
+								break;
+							end;
+						elseif(charges > 0) then
 							itemBag = bag; itemSlot = slot; 
 							break;
 						end;
@@ -155,4 +162,38 @@ function Pummeler_isPummelerInBag(itemName)
             end;
         end;
     return itemBag, itemSlot;   
+end;
+
+-- Separate macro function to equip a fully charged Pummeler.
+function Pummeler_equipFullyCharged()
+	createPummelerFrame();
+	local haste, hasteIndex, numBuffs = Pummeler_isBuffNameActive("Haste");
+	local bagPummeler, slotPummeler = nil;
+	local pummelerWeapon = "Manual Crowd Pummeler";
+	local chargesText = nil;
+	local charge = 0;
+	local slotId = GetInventorySlotInfo("MAINHANDSLOT");
+	local itemLink = GetInventoryItemLink("player", slotId);
+	local buffTimeLeft = nil;
+	local gameTime = GetTime();
+	
+	chargesText = Pummeler_getChargesText{};
+	charge = Pummeler_getChargeNumber(chargesText);
+	
+	if(haste == true) then 
+		buffTimeLeft = 30 - math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
+		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." Is active for "..buffTimeLeft.." more seconds!");
+	else
+		if(charge == 3) then
+			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: You already have a fully charged "..pummelerWeapon.." equipped.");
+		else
+			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler", true);
+			if(bagPummeler ~= nil and slotPummeler ~= nil) then
+				UseContainerItem(bagPummeler, slotPummeler, 1);
+				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a fully charged "..pummelerWeapon..".");
+			else
+				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: No fully charged "..pummelerWeapon.." found.");
+			end;
+		end;
+	end;
 end;
