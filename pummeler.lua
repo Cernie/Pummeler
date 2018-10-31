@@ -28,6 +28,7 @@ function Pummeler_main()
 	local chargesText = nil;
 	local charge = 0;
 	local buffTimeLeft = nil;
+	local timeBetweenUses = 3;
 	local bagPummeler, slotPummeler = nil;
 	numBuffs = numBuffs - 1;
 	
@@ -41,11 +42,14 @@ function Pummeler_main()
 		if(weaponCd ~= 0) then
 			timeLeft = weaponCd - math.floor(gameTime - weaponTimer);
 			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." On cooldown, "..timeLeft.." seconds left!");
-		elseif(itemLink ~= nil and string.find(itemLink, pummelerWeapon) and charge ~= 0 and weaponCd == 0) then 
-			charge = charge - 1;
-			UseInventoryItem(16);
-			Pummeler_Start_HasteBuff_Time = gameTime;
-			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
+		elseif(itemLink ~= nil and string.find(itemLink, pummelerWeapon) and charge ~= 0 and weaponCd == 0) then
+			buffTimeLeft = math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
+			if(buffTimeLeft >= timeBetweenUses) then
+				charge = charge - 1;
+				UseInventoryItem(16);
+				Pummeler_Start_HasteBuff_Time = gameTime;
+				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
+			end;
 		else
 			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler", false);
 			if(bagPummeler ~= nil and slotPummeler ~= nil) then
