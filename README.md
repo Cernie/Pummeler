@@ -8,7 +8,7 @@ Author: Cernie
 
 # Installation
 
-Unzip the CerniesWonderfulFunctions folder into WoW directory Interface/Addons folder. Remove the -master from the folder name.
+Unzip the Pummeler folder into WoW directory Interface/Addons folder. Remove the -master from the folder name.
 
 # Usage
 - To use in a macro type 
