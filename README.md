@@ -10,4 +10,5 @@ One button for equipping and using Manual Crowd Pummeler(s) in vanilla World of 
 - To equip a fully charged Manual Crowd Pummeler, create a separate macro and type 
 
 <code>/script Pummeler_equipFullyCharged();</code> 
+
 Note: this only equips a fully charged pummeler, see the previous macro to use it.
