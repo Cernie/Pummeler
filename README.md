@@ -3,6 +3,13 @@
 # Pummeler
 One button for equipping and using Manual Crowd Pummeler(s) in vanilla World of Warcraft
 
+Author: Cernie
+
+
+# Installation
+
+Unzip the CerniesWonderfulFunctions folder into WoW directory Interface/Addons folder. Remove the -master from the folder name.
+
 # Usage
 - To use in a macro type 
 
