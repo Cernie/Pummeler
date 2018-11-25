@@ -38,7 +38,7 @@ function Pummeler_main()
 	if(haste == true) then
 		buffTimeLeft = 30 - math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
 		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." Is active for "..buffTimeLeft.." more seconds!");
-	elseif(haste == false and numBuffs < 32) then 
+	elseif(haste == false and numBuffs < 32) then
 		if(weaponCd ~= 0) then
 			timeLeft = weaponCd - math.floor(gameTime - weaponTimer);
 			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." On cooldown, "..timeLeft.." seconds left!");
@@ -57,10 +57,10 @@ function Pummeler_main()
 				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
 			end;
 		end;	
-	elseif(haste == false and numBuffs >= 32) then
-		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Cannot use "..itemLink.. " due to buff limit!");
-		end;
+	 elseif(haste == false and numBuffs >= 32) then
+		 DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Cannot use "..itemLink.. " due to buff limit!");
 	end;
+end;
 
 function Pummeler_getChargesText(options)
 	pummelerTooltip:SetOwner( WorldFrame, "ANCHOR_NONE" );
@@ -155,11 +155,11 @@ function Pummeler_isPummelerInBag(itemName, threeChargesFlag)
 						if(threeChargesFlag == true) then
 							if(charges == 3) then
 								itemBag = bag; itemSlot = slot; 
-								break;
+								return itemBag, itemSlot; 
 							end;
 						elseif(charges > 0) then
 							itemBag = bag; itemSlot = slot; 
-							break;
+							return itemBag, itemSlot; 
 						end;
 					end;
                 end;
