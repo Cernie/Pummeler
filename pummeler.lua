@@ -30,35 +30,49 @@ function Pummeler_main()
 	local buffTimeLeft = nil;
 	local timeBetweenUses = 3;
 	local bagPummeler, slotPummeler = nil;
+	local attackSpeed = UnitAttackSpeed("player");
+	local catForm, bearForm = nil;
 	numBuffs = numBuffs - 1;
+	
+	--get user's current form
+	local currentForm = 0;
+	for i = 1, GetNumShapeshiftForms(), 1
+		do
+			_,formName,active = GetShapeshiftFormInfo(i);
+			if(formName == "Cat Form") then catForm = i; end;
+			if(string.find(formName, "Bear Form")) then bearForm = i; end;
+			if(active ~= nil) then currentForm = i; end;
+	end;
 	
 	chargesText = Pummeler_getChargesText{};
 	charge = Pummeler_getChargeNumber(chargesText);
 
-	if(haste == true) then
+	if(haste == true or (currentForm == bearForm and attackSpeed <= 1.7) or (currentForm == catForm and attackSpeed <= 0.7)) then
 		buffTimeLeft = 30 - math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
 		DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." Is active for "..buffTimeLeft.." more seconds!");
-	elseif(haste == false and numBuffs < 32) then
-		if(weaponCd ~= 0) then
-			timeLeft = weaponCd - math.floor(gameTime - weaponTimer);
-			DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." On cooldown, "..timeLeft.." seconds left!");
-		elseif(itemLink ~= nil and string.find(itemLink, pummelerWeapon) and charge ~= 0 and weaponCd == 0) then
-			buffTimeLeft = math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
-			if(buffTimeLeft >= timeBetweenUses) then
-				charge = charge - 1;
-				UseInventoryItem(16);
-				Pummeler_Start_HasteBuff_Time = gameTime;
-				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
+	elseif(haste == false) then
+		if(numBuffs < 32 or (currentForm == bearForm and attackSpeed > 1.7) or (currentForm == catForm and attackSpeed > 0.7)) then
+			if(weaponCd ~= 0) then
+				timeLeft = weaponCd - math.floor(gameTime - weaponTimer);
+				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: "..itemLink.." On cooldown, "..timeLeft.." seconds left!");
+			elseif(itemLink ~= nil and string.find(itemLink, pummelerWeapon) and charge ~= 0 and weaponCd == 0) then
+				buffTimeLeft = math.floor(gameTime - Pummeler_Start_HasteBuff_Time);
+				if(buffTimeLeft >= timeBetweenUses) then
+					charge = charge - 1;
+					UseInventoryItem(16);
+					Pummeler_Start_HasteBuff_Time = gameTime;
+					DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Using "..itemLink..": "..charge.." charges left!");
+				end;
+			else
+				bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler", false);
+				if(bagPummeler ~= nil and slotPummeler ~= nil) then
+					UseContainerItem(bagPummeler, slotPummeler, 1);
+					DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
+				end;
 			end;
-		else
-			bagPummeler, slotPummeler = Pummeler_isPummelerInBag("Manual Crowd Pummeler", false);
-			if(bagPummeler ~= nil and slotPummeler ~= nil) then
-				UseContainerItem(bagPummeler, slotPummeler, 1);
-				DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Equipping a "..pummelerWeapon..".");
-			end;
-		end;	
-	 elseif(haste == false and numBuffs >= 32) then
-		 DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Cannot use "..itemLink.. " due to buff limit!");
+		end;
+	 --elseif(haste == false and numBuffs >= 32) then
+		 --DEFAULT_CHAT_FRAME:AddMessage("Pummeler: Cannot use "..itemLink.. " due to buff limit!");
 	end;
 end;
 
