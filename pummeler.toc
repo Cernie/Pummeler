@@ -3,6 +3,6 @@
 ## Title: Pummeler
 ## Notes: Script function for smart Manual Crowd Pummeler usage
 ## Dependencies: SuperMacro
-## Version: 1.8
+## Version: 1.8.1
 pummeler.xml
 pummeler.lua
